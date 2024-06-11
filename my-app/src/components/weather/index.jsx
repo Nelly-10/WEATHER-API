@@ -4,7 +4,7 @@ import Search from "../search";
 export default function Weather() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [weatherData, SetWeatherData] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
 
   async function fetchWeatherData(param) {
     setLoading(true);
@@ -16,7 +16,7 @@ export default function Weather() {
       // console.log(data, 'data');
 
       if (data) {
-        SetWeatherData(data);
+        setWeatherData(data);
         setLoading(false);
       }
     } catch (e) {
@@ -26,7 +26,7 @@ export default function Weather() {
 
   function handleSearch() {
     fetchWeatherData(search);
-  }
+  };
 
   function getCurrentDate() {
     return new Date().toLocaleDateString("en-us", {
@@ -38,10 +38,10 @@ export default function Weather() {
   }
 
   useEffect(() => {
-    fetchWeatherData("bangalore");
+    fetchWeatherData("NIGERIA");
   }, []);
 
-  console.log(weatherData);
+  // console.log(weatherData);
 
   // console.log(loading);
   return (
@@ -70,14 +70,14 @@ export default function Weather() {
               : ""}
           </p>
           <div className="weather-info">
-            <div>
+            <div className="column">
               <div>
                 <p className="wind">{weatherData?.wind?.speed}</p>
                 <p>Wind Speed</p>
               </div>
             </div>
             {/*  */}
-            <div>
+            <div className="column">
               <div>
                 <p className="humidity">{weatherData?.main?.humidity}%</p>
                 <p>Humidity</p>
