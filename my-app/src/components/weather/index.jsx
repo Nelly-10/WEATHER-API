@@ -1,5 +1,91 @@
-import React from 'react'
+import { useEffect, useState } from "react";
+import Search from "../search";
 
 export default function Weather() {
-    return <div>Weather</div>;
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [weatherData, SetWeatherData] = useState(null);
+
+  async function fetchWeatherData(param) {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${param}&appid=7be6edbd98d21b49016ede903bf434a2`
+      );
+      const data = await response.json();
+      // console.log(data, 'data');
+
+      if (data) {
+        SetWeatherData(data);
+        setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+    }
   }
+
+  function handleSearch() {
+    fetchWeatherData(search);
+  }
+
+  function getCurrentDate() {
+    return new Date().toLocaleDateString("en-us", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  useEffect(() => {
+    fetchWeatherData("bangalore");
+  }, []);
+
+  console.log(weatherData);
+
+  // console.log(loading);
+  return (
+    <div className="">
+      <Search
+        search={search}
+        setSearch={setSearch}
+        handleSearch={handleSearch}
+      />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div>
+          <div className="city-name">
+            <h2>
+              {weatherData?.name}, <span>{weatherData?.sys?.country}</span>
+            </h2>
+          </div>
+          <div className="date">
+            <span>{getCurrentDate()}</span>
+          </div>
+          <div className="temp">{weatherData?.main?.temp}</div>
+          <p className="description">
+            {weatherData && weatherData.weather && weatherData.weather[0]
+              ? weatherData.weather[0].description
+              : ""}
+          </p>
+          <div className="weather-info">
+            <div>
+              <div>
+                <p className="wind">{weatherData?.wind?.speed}</p>
+                <p>Wind Speed</p>
+              </div>
+            </div>
+            {/*  */}
+            <div>
+              <div>
+                <p className="humidity">{weatherData?.main?.humidity}%</p>
+                <p>Humidity</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
